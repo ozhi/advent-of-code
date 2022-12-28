@@ -137,7 +137,6 @@ func (b *Board) FreeForCurrentShape(x int, y int) bool {
 			}
 		}
 	}
-	// fmt.Printf("\t free for %d at %d,%d\n", b.ShapeIdx, x, y)
 	return true
 }
 
@@ -173,21 +172,39 @@ func main() {
 		panic(err)
 	}
 
+	lastI := 0
+	lastFreeRow := 0
+
+	reps := (1000000000000-3426)/1710 - 10
+
 	board := NewBoard(bytes)
-	for i := 0; i < 1_000_000_000_000; i++ {
-		if i%1000000 == 0 {
-			fmt.Printf("\tdropping shape %d\n", i)
+	for i := 0; i < 1000000000000; i++ {
+		if board.ShapeIdx == 1 && board.WindIdx == 4 {
+			fmt.Printf("i=%d (+ %d) shape=%d wind=%d firstFreeRow=%d (+ %d)\n",
+				i, i-lastI,
+				board.ShapeIdx, board.WindIdx,
+				board.FirstFreeRow, board.FirstFreeRow-lastFreeRow,
+			)
+			fmt.Scanf("%s")
+			lastI = i
+			lastFreeRow = board.FirstFreeRow
+
+			if i == 3426 {
+				i += reps * 1710
+				// board.FirstFreeRow += reps * 2647
+			}
 		}
 		// fmt.Printf("%s\n", board)
 		board.Drop()
 		// fmt.Scanf("%s")
 	}
 
-	fmt.Printf("height: %d\n", board.FirstFreeRow)
+	fmt.Printf("height: %d\n", reps*2647+board.FirstFreeRow)
 	// part 1 - 2022 rocks
 	// 3093 too low
 	// 3105 too low
 	// 3133
 
 	// part 2 - 1000000000000 rocks
+	// 1547953216393
 }
